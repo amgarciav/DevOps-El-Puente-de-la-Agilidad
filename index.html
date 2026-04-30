@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misión DevOps: El Puente de la Agilidad</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cyan: #00d4ff;
+    --cyan-soft: #7ee8fa;
+    --blue: #1a6fff;
+    --blue-deep: #0d3bbd;
+    --white: #f0f8ff;
+    --gray-light: #e8f4fd;
+    --gray-mid: #b8d4f0;
+    --dark: #0a1628;
+    --card-bg: rgba(255,255,255,0.92);
+    --glass: rgba(255,255,255,0.15);
+    --success: #00c97a;
+    --error: #ff4d6d;
+    --gold: #ffd700;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: linear-gradient(135deg, #e8f4fd 0%, #c7e8fb 40%, #a8d8f0 70%, #d0eaff 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(0,212,255,0.12) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(26,111,255,0.10) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(126,232,250,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Floating grid lines */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .screen {
+    display: none;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 780px;
+    padding: 20px;
+    animation: fadeIn 0.5s ease;
+  }
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card-bg);
+    border-radius: 28px;
+    padding: 44px 48px;
+    box-shadow:
+      0 8px 40px rgba(0,100,200,0.13),
+      0 2px 0 rgba(0,212,255,0.3) inset,
+      0 0 0 1.5px rgba(0,212,255,0.25);
+    backdrop-filter: blur(12px);
+  }
+
+  /* LOGO / ICON AREA */
+  .hero-icon {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, #00d4ff, #1a6fff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    box-shadow: 0 0 40px rgba(0,212,255,0.35), 0 4px 20px rgba(26,111,255,0.3);
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 40px rgba(0,212,255,0.35), 0 4px 20px rgba(26,111,255,0.3); }
+    50% { box-shadow: 0 0 65px rgba(0,212,255,0.6), 0 4px 30px rgba(26,111,255,0.5); }
+  }
+
+  h1.main-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    font-weight: 900;
+    text-align: center;
+    color: var(--dark);
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+  }
+  h1.main-title span { color: var(--blue); }
+
+  .subtitle {
+    text-align: center;
+    color: #4a7090;
+    font-size: 1.05rem;
+    margin-top: 12px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* TAGS */
+  .tag-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px 0 28px;
+  }
+  .tag {
+    background: linear-gradient(135deg, rgba(0,212,255,0.12), rgba(26,111,255,0.12));
+    border: 1.5px solid rgba(0,212,255,0.4);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--blue-deep);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* NAME INPUT */
+  .name-section {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .name-section p {
+    font-size: 1.1rem;
+    color: #4a7090;
+    margin-bottom: 14px;
+    font-weight: 400;
+  }
+  .name-input {
+    width: 100%;
+    max-width: 340px;
+    padding: 14px 22px;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.05rem;
+    border: 2px solid rgba(0,212,255,0.4);
+    border-radius: 50px;
+    outline: none;
+    background: rgba(255,255,255,0.8);
+    color: var(--dark);
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .name-input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 20px rgba(0,212,255,0.25);
+    background: white;
+  }
+  .name-input::placeholder { color: #aac; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-block;
+    padding: 15px 44px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #00d4ff, #1a6fff);
+    color: white;
+    box-shadow: 0 6px 25px rgba(0,150,255,0.35);
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 35px rgba(0,150,255,0.5);
+  }
+  .btn-primary:active { transform: translateY(0); }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    margin-bottom: 28px;
+  }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .progress-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    color: var(--blue);
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .progress-score {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    color: var(--blue-deep);
+    font-weight: 700;
+  }
+  .progress-bar {
+    height: 8px;
+    background: rgba(0,212,255,0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(0,212,255,0.2);
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #1a6fff);
+    border-radius: 10px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 0 12px rgba(0,212,255,0.5);
+  }
+
+  /* QUESTION CARD */
+  .q-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(26,111,255,0.12));
+    border: 1.5px solid rgba(0,212,255,0.35);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--blue-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 16px;
+  }
+
+  .q-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    color: var(--gray-mid);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .q-text {
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: var(--dark);
+    line-height: 1.5;
+    margin-bottom: 22px;
+  }
+
+  /* OPTIONS */
+  .options-grid {
+    display: grid;
+    gap: 12px;
+  }
+  .option-btn {
+    width: 100%;
+    padding: 15px 20px;
+    background: rgba(255,255,255,0.7);
+    border: 2px solid rgba(0,212,255,0.25);
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.97rem;
+    font-weight: 500;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.25s;
+  }
+  .option-btn:hover:not(:disabled) {
+    background: rgba(0,212,255,0.08);
+    border-color: var(--cyan);
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0,150,255,0.12);
+  }
+  .option-btn .letter {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(0,212,255,0.18), rgba(26,111,255,0.18));
+    border: 1.5px solid rgba(0,212,255,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--blue);
+  }
+  .option-btn.correct {
+    background: rgba(0,201,122,0.12);
+    border-color: var(--success);
+    color: #006640;
+  }
+  .option-btn.correct .letter {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+  }
+  .option-btn.wrong {
+    background: rgba(255,77,109,0.1);
+    border-color: var(--error);
+    color: #8b0020;
+  }
+  .option-btn.wrong .letter {
+    background: var(--error);
+    border-color: var(--error);
+    color: white;
+  }
+  .option-btn:disabled { cursor: not-allowed; }
+
+  /* FEEDBACK */
+  .feedback-box {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    line-height: 1.5;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.correct-fb {
+    background: rgba(0,201,122,0.1);
+    border: 1.5px solid rgba(0,201,122,0.4);
+    color: #005030;
+  }
+  .feedback-box.wrong-fb {
+    background: rgba(255,77,109,0.08);
+    border: 1.5px solid rgba(255,77,109,0.35);
+    color: #7a001a;
+  }
+
+  /* CHALLENGE CARDS (retos, ordenar, etc.) */
+  .challenge-box {
+    background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(26,111,255,0.06));
+    border: 2px dashed rgba(0,212,255,0.35);
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 16px;
+  }
+  .challenge-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* DRAG items */
+  .drag-item {
+    background: white;
+    border: 2px solid rgba(0,212,255,0.3);
+    border-radius: 12px;
+    padding: 11px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--dark);
+    cursor: grab;
+    user-select: none;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .drag-item:active { cursor: grabbing; transform: scale(1.02); }
+  .drag-item.dragging { opacity: 0.5; }
+  .drag-item .drag-handle { color: var(--cyan); font-size: 1.1rem; }
+
+  .drop-zone {
+    min-height: 48px;
+    border: 2px dashed rgba(0,212,255,0.4);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--gray-mid);
+    transition: all 0.2s;
+  }
+  .drop-zone.over {
+    background: rgba(0,212,255,0.08);
+    border-color: var(--cyan);
+  }
+  .drop-zone .zone-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--blue);
+    min-width: 80px;
+  }
+
+  /* NEXT BTN */
+  .next-btn {
+    margin-top: 20px;
+    display: none;
+  }
+  .next-btn.show { display: flex; justify-content: flex-end; }
+
+  /* FINAL SCREEN */
+  .medal {
+    font-size: 90px;
+    text-align: center;
+    animation: medalBounce 0.8s cubic-bezier(0.36,0.07,0.19,0.97) both;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  @keyframes medalBounce {
+    0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+    60% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  .final-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.6rem;
+    font-weight: 900;
+    text-align: center;
+    color: var(--dark);
+    margin-bottom: 8px;
+  }
+  .final-score-big {
+    font-family: 'Orbitron', monospace;
+    font-size: 3rem;
+    font-weight: 900;
+    text-align: center;
+    background: linear-gradient(135deg, #00d4ff, #1a6fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin: 12px 0;
+  }
+  .final-msg {
+    text-align: center;
+    font-size: 1.05rem;
+    color: #4a7090;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .stars {
+    text-align: center;
+    font-size: 2rem;
+    letter-spacing: 6px;
+    margin-bottom: 16px;
+  }
+
+  .improvement-box {
+    background: rgba(255,77,109,0.07);
+    border: 1.5px solid rgba(255,77,109,0.3);
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  .improvement-box h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    color: #c00030;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .improvement-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  .improvement-box li {
+    padding: 6px 0;
+    font-size: 0.9rem;
+    color: #700020;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+  }
+  .improvement-box li::before { content: '→'; color: #ff4d6d; flex-shrink: 0; margin-top: 1px; }
+
+  .success-box {
+    background: rgba(0,201,122,0.08);
+    border: 1.5px solid rgba(0,201,122,0.35);
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  .success-box h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    color: #005030;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* TIMER */
+  .timer-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .timer-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(0,212,255,0.15);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .timer-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success), var(--cyan));
+    border-radius: 10px;
+    transition: width 1s linear, background 1s linear;
+  }
+  .timer-fill.warning { background: linear-gradient(90deg, var(--error), #ff8c00); }
+  .timer-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--blue);
+    min-width: 28px;
+    text-align: right;
+  }
+
+  /* CONFETTI */
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+    z-index: 9999;
+    pointer-events: none;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.35), transparent);
+    margin: 24px 0;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .card { padding: 28px 22px; }
+    h1.main-title { font-size: 1.4rem; }
+    .final-score-big { font-size: 2.2rem; }
+    .btn { padding: 13px 30px; font-size: 0.85rem; }
+  }
+
+  /* MATCH GAME */
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .match-col { display: flex; flex-direction: column; gap: 8px; }
+  .match-item {
+    padding: 11px 14px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .match-item.left-item {
+    background: rgba(0,212,255,0.08);
+    border-color: rgba(0,212,255,0.3);
+    color: var(--blue-deep);
+  }
+  .match-item.right-item {
+    background: rgba(26,111,255,0.08);
+    border-color: rgba(26,111,255,0.3);
+    color: var(--dark);
+  }
+  .match-item.selected {
+    border-color: var(--cyan);
+    box-shadow: 0 0 14px rgba(0,212,255,0.35);
+    transform: scale(1.03);
+  }
+  .match-item.matched-ok {
+    background: rgba(0,201,122,0.12);
+    border-color: var(--success);
+    color: #005030;
+    cursor: default;
+  }
+  .match-item.matched-wrong {
+    background: rgba(255,77,109,0.1);
+    border-color: var(--error);
+    animation: shake 0.4s ease;
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  /* FILL IN THE BLANK */
+  .blank-input {
+    border: none;
+    border-bottom: 2px solid var(--cyan);
+    background: transparent;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--blue-deep);
+    padding: 2px 8px;
+    width: 130px;
+    outline: none;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .blank-input:focus { border-color: var(--blue); }
+
+  /* SCENARIO */
+  .scenario-box {
+    background: linear-gradient(135deg, rgba(26,111,255,0.07), rgba(0,212,255,0.05));
+    border-left: 4px solid var(--cyan);
+    border-radius: 0 14px 14px 0;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    font-style: italic;
+    color: #3a5070;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============= PANTALLA 1: BIENVENIDA ============= -->
+<div class="screen active" id="screen-welcome">
+  <div class="card">
+    <div class="hero-icon">🚀</div>
+    <h1 class="main-title">Misión <span>DevOps</span><br>El Puente de la Agilidad</h1>
+    <p class="subtitle">¡Bienvenido, Agente Digital! Estás a punto de iniciar una misión para dominar los fundamentos de DevOps. ¿Estás listo para el desafío?</p>
+    <div class="tag-row">
+      <span class="tag">🔗 CI/CD</span>
+      <span class="tag">⚡ Automatización</span>
+      <span class="tag">📡 Monitoreo</span>
+      <span class="tag">🛡️ DevSecOps</span>
+      <span class="tag">☁️ Cloud</span>
+    </div>
+    <div class="name-section">
+      <p>¡Primero, dinos cómo llamarte, Agente!</p>
+      <input class="name-input" id="player-name-input" type="text" placeholder="Tu nombre aquí..." maxlength="30">
+    </div>
+    <div style="text-align:center;">
+      <button class="btn btn-primary" onclick="startGame()">⚡ INICIAR MISIÓN</button>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex; gap:16px; text-align:center; justify-content:center; flex-wrap:wrap;">
+      <div style="font-size:0.82rem; color:#6a90b0;"><span style="font-size:1.3rem;">🎯</span><br><strong style="color:var(--blue-deep);">12 Desafíos</strong><br>Variados</div>
+      <div style="font-size:0.82rem; color:#6a90b0;"><span style="font-size:1.3rem;">⏱️</span><br><strong style="color:var(--blue-deep);">Cronometrado</strong><br>Por pregunta</div>
+      <div style="font-size:0.82rem; color:#6a90b0;"><span style="font-size:1.3rem;">🏅</span><br><strong style="color:var(--blue-deep);">Medalla</strong><br>Al finalizar</div>
+      <div style="font-size:0.82rem; color:#6a90b0;"><span style="font-size:1.3rem;">💡</span><br><strong style="color:var(--blue-deep);">Feedback</strong><br>Inmediato</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============= PANTALLA 2: JUEGO ============= -->
+<div class="screen" id="screen-game">
+  <div class="card">
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="progress-label" id="prog-label">DESAFÍO 1 / 12</span>
+        <span class="progress-score">⭐ <span id="score-display">0</span> pts</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+      <div class="timer-num" id="timer-num">20</div>
+    </div>
+    <div id="challenge-container"></div>
+    <div class="feedback-box" id="feedback-box"></div>
+    <div class="next-btn" id="next-btn">
+      <button class="btn btn-primary" onclick="nextQuestion()">SIGUIENTE →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============= PANTALLA 3: RESULTADO FINAL ============= -->
+<div class="screen" id="screen-final">
+  <div class="card">
+    <div id="final-content"></div>
+  </div>
+</div>
+
+<script>
+// ===== DATOS DEL JUEGO =====
+let playerName = '';
+let score = 0;
+let currentQ = 0;
+let timerInterval = null;
+let timeLeft = 20;
+let answered = false;
+
+// COLORES para confetti
+const confettiColors = ['#00d4ff','#1a6fff','#ffd700','#00c97a','#ff4d6d','#7ee8fa'];
+
+// ===== 12 DESAFÍOS =====
+const challenges = [
+  // 1. Pregunta múltiple opción
+  {
+    type: 'multiple',
+    badge: '🔗 Integración Continua',
+    qNum: 'DESAFÍO 1',
+    question: '¿Qué herramienta utilizarías para gestionar repositorios de código de forma colaborativa en un equipo DevOps?',
+    options: ['GIT', 'Microsoft Word', 'COBIT', 'Adobe Acrobat'],
+    correct: 0,
+    time: 40,
+    feedbackOk: '✅ ¡Correcto! GIT es el sistema de control de versiones más usado en DevOps. Permite trabajo colaborativo, ramas y fusión de código de manera eficiente.',
+    feedbackFail: '❌ La respuesta correcta es GIT. Es el estándar de facto para control de versiones en DevOps. Word y Acrobat son para documentos, COBIT es un marco de gobernanza IT.'
+  },
+  // 2. Verdadero/Falso
+  {
+    type: 'truefalse',
+    badge: '🔄 Cultura DevOps',
+    qNum: 'DESAFÍO 2',
+    question: 'VERDADERO o FALSO: En DevOps, los equipos de Desarrollo y Operaciones trabajan de forma completamente separada y no comparten responsabilidades.',
+    correct: 'false',
+    time: 30,
+    feedbackOk: '✅ ¡FALSO! Exactamente. DevOps ROMPE los silos entre Dev y Ops. La colaboración y responsabilidad compartida son la esencia de DevOps.',
+    feedbackFail: '❌ Es FALSO. DevOps nació precisamente para UNIR a los equipos de Desarrollo y Operaciones, eliminando barreras y promoviendo colaboración continua.'
+  },
+  // 3. Pregunta múltiple opción
+  {
+    type: 'multiple',
+    badge: '🚀 Entrega Continua',
+    qNum: 'DESAFÍO 3',
+    question: '¿Cuál es la principal ventaja de automatizar el despliegue en pre-producción dentro de una pipeline CI/CD?',
+    options: ['Feedback temprano sobre errores', 'Gastar más tiempo en revisiones manuales', 'Evitar hablar con el equipo de operaciones', 'Escribir más documentación PDF'],
+    correct: 0,
+    time: 40,
+    feedbackOk: '✅ ¡Perfecto! El feedback temprano permite detectar errores antes de que lleguen a producción, reduciendo costos y riesgos significativamente.',
+    feedbackFail: '❌ La respuesta es "Feedback temprano". Automatizar despliegues permite detectar fallos en etapas tempranas, no al final cuando arreglarlos es costoso.'
+  },
+  // 4. Completar el espacio
+  {
+    type: 'fillblank',
+    badge: '📡 Monitoreo Continuo',
+    qNum: 'DESAFÍO 4',
+    question: 'Completa la definición: El __________ continuo tiene como objetivo identificar fallas en tiempo real para mantener la salud del sistema.',
+    blank: 'monitoreo',
+    hint: '(empieza con M)',
+    time: 40,
+    feedbackOk: '✅ ¡Excelente! El MONITOREO continuo es una práctica clave en DevOps. Herramientas como Prometheus, Grafana y Datadog lo hacen posible.',
+    feedbackFail: '❌ La palabra correcta es MONITOREO. Esta práctica permite observar el sistema en producción y reaccionar ante incidentes en tiempo real.'
+  },
+  // 5. Múltiple opción con escenario
+  {
+    type: 'scenario',
+    badge: '🛡️ DevSecOps',
+    qNum: 'DESAFÍO 5',
+    scenario: '💼 Escenario: Tu equipo acaba de descubrir una vulnerabilidad crítica de seguridad en el código. La aplicación ya está en producción y tiene miles de usuarios activos.',
+    question: '¿Cuál es la respuesta más alineada con los principios DevOps/DevSecOps?',
+    options: [
+      'Crear una rama hotfix, aplicar el parche, pasar por CI/CD y desplegar el fix urgente',
+      'Apagar el servidor y esperar al próximo sprint para arreglarlo',
+      'Borrar los logs para que nadie se entere del problema',
+      'Enviar un correo al cliente diciendo que todo está bien'
+    ],
+    correct: 0,
+    time: 50,
+    feedbackOk: '✅ ¡Excelente decisión! El hotfix a través del pipeline CI/CD es la respuesta DevOps: rápida, controlada, automatizada y transparente.',
+    feedbackFail: '❌ La respuesta correcta es el hotfix por CI/CD. DevOps promueve respuestas rápidas y automatizadas ante incidentes, con trazabilidad completa.'
+  },
+  // 6. Relación/Matching
+  {
+    type: 'matching',
+    badge: '⚙️ Herramientas DevOps',
+    qNum: 'DESAFÍO 6',
+    question: 'Empareja cada herramienta con su función principal en el ecosistema DevOps:',
+    pairs: [
+      { left: '🐳 Docker', right: 'Contenedores y empaquetado' },
+      { left: '☸️ Kubernetes', right: 'Orquestación de contenedores' },
+      { left: '🔁 Jenkins', right: 'Automatización de pipelines CI/CD' }
+    ],
+    time: 60,
+    feedbackOk: '✅ ¡Maestro de herramientas! Docker empaqueta, Kubernetes orquesta y Jenkins automatiza. Juntos forman el corazón de una arquitectura DevOps moderna.',
+    feedbackFail: '❌ Recuerda: Docker = contenedores, Kubernetes = orquestación, Jenkins = CI/CD pipelines. Estas tres herramientas son fundamentales en DevOps.'
+  },
+  // 7. Múltiple opción
+  {
+    type: 'multiple',
+    badge: '🌊 Metodología Ágil',
+    qNum: 'DESAFÍO 7',
+    question: '¿Qué metodología de desarrollo se complementa mejor con DevOps para lograr entregas frecuentes y de valor?',
+    options: ['Scrum / Agile', 'Cascada (Waterfall)', 'CMMI Nivel 1', 'Desarrollo sin metodología'],
+    correct: 0,
+    time: 40,
+    feedbackOk: '✅ ¡Exacto! Agile/Scrum y DevOps son complementarios: Agile organiza el trabajo en sprints cortos, DevOps automatiza la entrega de ese trabajo.',
+    feedbackFail: '❌ La respuesta es Agile/Scrum. DevOps y Agile se potencian mutuamente: iteraciones cortas + entrega automatizada = software de valor continuo.'
+  },
+  // 8. Verdadero/Falso
+  {
+    type: 'truefalse',
+    badge: '☁️ Infraestructura como Código',
+    qNum: 'DESAFÍO 8',
+    question: 'VERDADERO o FALSO: "Infrastructure as Code" (IaC) significa configurar servidores manualmente usando interfaces gráficas para mayor control.',
+    correct: 'false',
+    time: 30,
+    feedbackOk: '✅ ¡FALSO! IaC es exactamente lo CONTRARIO: gestionar la infraestructura mediante CÓDIGO versionable (Terraform, Ansible), no de forma manual.',
+    feedbackFail: '❌ Es FALSO. IaC (Terraform, Ansible, Pulumi) significa gestionar infraestructura COMO CÓDIGO: declarativo, versionable y automatizable.'
+  },
+  // 9. Múltiple opción con escenario
+  {
+    type: 'scenario',
+    badge: '📊 Métricas DORA',
+    qNum: 'DESAFÍO 9',
+    scenario: '📈 Tu equipo quiere medir su rendimiento DevOps. El CTO pide usar las métricas DORA (DevOps Research and Assessment).',
+    question: '¿Cuál de las siguientes NO es una métrica DORA?',
+    options: [
+      'Número de followers en LinkedIn del equipo',
+      'Frecuencia de despliegue (Deployment Frequency)',
+      'Tiempo de recuperación ante fallos (MTTR)',
+      'Tasa de fallos en cambios (Change Failure Rate)'
+    ],
+    correct: 0,
+    time: 45,
+    feedbackOk: '✅ ¡Correcto! Los followers en LinkedIn no son métricas DORA. Las 4 métricas DORA reales son: Deployment Frequency, Lead Time, MTTR y Change Failure Rate.',
+    feedbackFail: '❌ La respuesta correcta es "Followers en LinkedIn". Las métricas DORA miden rendimiento técnico real: frecuencia de despliegue, lead time, MTTR y tasa de fallos.'
+  },
+  // 10. Múltiple opción
+  {
+    type: 'multiple',
+    badge: '🔁 Pipeline CI/CD',
+    qNum: 'DESAFÍO 10',
+    question: '¿En qué orden correcto ocurren las etapas principales de un pipeline CI/CD bien diseñado?',
+    options: [
+      'Código → Build → Pruebas → Deploy → Monitoreo',
+      'Deploy → Código → Pruebas → Build → Monitoreo',
+      'Pruebas → Monitoreo → Código → Deploy → Build',
+      'Monitoreo → Deploy → Build → Código → Pruebas'
+    ],
+    correct: 0,
+    time: 45,
+    feedbackOk: '✅ ¡Pipeline perfecto! Código fuente → Build/compilación → Pruebas automatizadas → Despliegue → Monitoreo. Este flujo garantiza calidad continua.',
+    feedbackFail: '❌ El orden correcto es: Código → Build → Pruebas → Deploy → Monitoreo. Cada etapa valida que la siguiente sea segura de ejecutar.'
+  },
+  // 11. Completar el espacio
+  {
+    type: 'fillblank',
+    badge: '🤝 Colaboración DevOps',
+    qNum: 'DESAFÍO 11',
+    question: 'DevOps es una combinación de __________, procesos y herramientas que busca entregar valor al cliente de forma continua y confiable.',
+    blank: 'cultura',
+    hint: '(empieza con C)',
+    time: 35,
+    feedbackOk: '✅ ¡Brillante! CULTURA es el primer pilar de DevOps. Sin un cambio cultural hacia la colaboración y responsabilidad compartida, las herramientas no son suficientes.',
+    feedbackFail: '❌ La respuesta es CULTURA. DevOps es primero un cambio cultural, luego de procesos y finalmente de herramientas. Sin cultura, nada funciona.'
+  },
+  // 12. Múltiple opción final
+  {
+    type: 'multiple',
+    badge: '🏆 Desafío Final',
+    qNum: 'DESAFÍO 12 ★',
+    question: '¿Cuál es el beneficio más importante que una organización obtiene al implementar DevOps correctamente?',
+    options: [
+      'Entregar software de mayor calidad más rápido y con menos riesgos',
+      'Eliminar la necesidad de tener programadores en el equipo',
+      'Reducir el número de reuniones al mínimo posible',
+      'Usar únicamente tecnología open source sin excepción'
+    ],
+    correct: 0,
+    time: 40,
+    feedbackOk: '✅ ¡MAESTRO DEVOPS! La esencia de DevOps es exactamente esa: velocidad + calidad + confiabilidad en la entrega de software. ¡Has completado la misión!',
+    feedbackFail: '❌ El beneficio core de DevOps es: mayor velocidad, mayor calidad y menor riesgo en las entregas de software. ¡Sigue aprendiendo, lo lograrás!'
+  }
+];
+
+// ===== ESTADO DE MATCHING =====
+let matchState = { selectedLeft: null, selectedRight: null, matched: [], wrongCount: 0 };
+
+// ===== FUNCIONES PRINCIPALES =====
+function startGame() {
+  const inp = document.getElementById('player-name-input').value.trim();
+  if (!inp) {
+    alert('⚡ ¡Ingresa tu nombre antes de iniciar, Agente!');
+    return;
+  }
+  playerName = inp;
+  score = 0;
+  currentQ = 0;
+  showScreen('screen-game');
+  loadChallenge();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// Almacena las opciones barajadas y el nuevo índice correcto para la pregunta actual
+let shuffledOptions = [];
+let shuffledCorrect = 0;
+
+function loadChallenge() {
+  answered = false;
+  const q = challenges[currentQ];
+  const total = challenges.length;
+
+  // Barajar opciones para preguntas de opción múltiple y escenario
+  if ((q.type === 'multiple' || q.type === 'scenario') && q.options) {
+    // Crear array de {text, isCorrect}
+    const tagged = q.options.map((o, i) => ({ text: o, isCorrect: i === q.correct }));
+    // Mezclar
+    for (let i = tagged.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tagged[i], tagged[j]] = [tagged[j], tagged[i]];
+    }
+    shuffledOptions = tagged.map(t => t.text);
+    shuffledCorrect = tagged.findIndex(t => t.isCorrect);
+  }
+
+  // Progreso
+  document.getElementById('prog-label').textContent = `DESAFÍO ${currentQ+1} / ${total}`;
+  document.getElementById('score-display').textContent = score;
+  document.getElementById('progress-fill').style.width = `${(currentQ/total)*100}%`;
+
+  // Feedback y botón
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box';
+  fb.textContent = '';
+  document.getElementById('next-btn').className = 'next-btn';
+
+  // Contenido
+  const container = document.getElementById('challenge-container');
+  container.innerHTML = renderChallenge(q);
+
+  // Timer
+  startTimer(q.time);
+
+  // Post-render para matching
+  if (q.type === 'matching') initMatchingHandlers(q);
+  if (q.type === 'fillblank') {
+    const inp = document.getElementById('blank-field');
+    if (inp) inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') checkFillBlank(q); });
+  }
+}
+
+function renderChallenge(q) {
+  const badge = `<div class="q-type-badge">${q.badge}</div>`;
+  const qNum = `<div class="q-number">${q.qNum}</div>`;
+  const qText = `<div class="q-text">${q.question}</div>`;
+  const scenario = q.scenario ? `<div class="scenario-box">${q.scenario}</div>` : '';
+
+  if (q.type === 'multiple' || q.type === 'scenario') {
+    // Usar las opciones barajadas
+    const opts = shuffledOptions.map((o, i) => {
+      const letters = ['A','B','C','D'];
+      return `<button class="option-btn" id="opt-${i}" onclick="checkMultiple(${i})">
+        <span class="letter">${letters[i]}</span> ${o}
+      </button>`;
+    }).join('');
+    return `${badge}${qNum}${scenario}${qText}<div class="options-grid">${opts}</div>`;
+  }
+
+  if (q.type === 'truefalse') {
+    return `${badge}${qNum}${qText}
+    <div class="options-grid">
+      <button class="option-btn" id="opt-true" onclick="checkTF('true')"><span class="letter">✓</span> VERDADERO</button>
+      <button class="option-btn" id="opt-false" onclick="checkTF('false')"><span class="letter">✗</span> FALSO</button>
+    </div>`;
+  }
+
+  if (q.type === 'fillblank') {
+    const parts = q.question.split('__________');
+    return `${badge}${qNum}
+    <div class="q-text">${parts[0]}<input class="blank-input" id="blank-field" type="text" placeholder="${q.hint}" maxlength="20" autocomplete="off">${parts[1] || ''}</div>
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn btn-primary" onclick="checkFillBlank(challenges[currentQ])" style="padding:12px 32px; font-size:0.85rem;">RESPONDER ⚡</button>
+    </div>`;
+  }
+
+  if (q.type === 'matching') {
+    const leftItems = q.pairs.map((p, i) =>
+      `<div class="match-item left-item" id="left-${i}" data-idx="${i}">${p.left}</div>`
+    ).join('');
+    const rightIdxs = shuffle([0,1,2]);
+    const rightItems = rightIdxs.map(i =>
+      `<div class="match-item right-item" id="right-${i}" data-idx="${i}">${q.pairs[i].right}</div>`
+    ).join('');
+    return `${badge}${qNum}${qText}
+    <div class="challenge-box">
+      <div class="challenge-title">🖱️ Selecciona izquierda → derecha para emparejar</div>
+      <div class="match-grid">
+        <div class="match-col">${leftItems}</div>
+        <div class="match-col">${rightItems}</div>
+      </div>
+    </div>`;
+  }
+}
+
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+// ===== VERIFICACIÓN DE RESPUESTAS =====
+function checkMultiple(idx) {
+  if (answered) return;
+  answered = true;
+  stopTimer();
+  const q = challenges[currentQ];
+  const opts = document.querySelectorAll('.option-btn');
+  opts.forEach(b => b.disabled = true);
+
+  if (idx === shuffledCorrect) {
+    document.getElementById(`opt-${idx}`).classList.add('correct');
+    showFeedback(true, q.feedbackOk);
+    addScore();
+  } else {
+    document.getElementById(`opt-${idx}`).classList.add('wrong');
+    document.getElementById(`opt-${shuffledCorrect}`).classList.add('correct');
+    showFeedback(false, q.feedbackFail);
+  }
+  showNextBtn();
+}
+
+function checkTF(val) {
+  if (answered) return;
+  answered = true;
+  stopTimer();
+  const q = challenges[currentQ];
+  document.getElementById('opt-true').disabled = true;
+  document.getElementById('opt-false').disabled = true;
+
+  if (val === q.correct) {
+    document.getElementById(`opt-${val}`).classList.add('correct');
+    showFeedback(true, q.feedbackOk);
+    addScore();
+  } else {
+    document.getElementById(`opt-${val}`).classList.add('wrong');
+    document.getElementById(`opt-${q.correct}`).classList.add('correct');
+    showFeedback(false, q.feedbackFail);
+  }
+  showNextBtn();
+}
+
+function checkFillBlank(q) {
+  if (answered) return;
+  const inp = document.getElementById('blank-field');
+  if (!inp) return;
+  const val = inp.value.trim().toLowerCase();
+  if (!val) { inp.focus(); return; }
+  answered = true;
+  stopTimer();
+
+  if (val === q.blank.toLowerCase() || q.blank.toLowerCase().includes(val) && val.length >= 4) {
+    inp.style.borderColor = 'var(--success)';
+    inp.style.color = 'var(--success)';
+    inp.value = q.blank;
+    showFeedback(true, q.feedbackOk);
+    addScore();
+  } else {
+    inp.style.borderColor = 'var(--error)';
+    inp.style.color = 'var(--error)';
+    showFeedback(false, `${q.feedbackFail} La respuesta correcta era: <strong>${q.blank.toUpperCase()}</strong>`);
+  }
+  inp.disabled = true;
+  showNextBtn();
+}
+
+// ===== MATCHING =====
+function initMatchingHandlers(q) {
+  matchState = { selectedLeft: null, selectedRight: null, matched: [], wrongCount: 0 };
+  q.pairs.forEach((_, i) => {
+    const leftEl = document.getElementById(`left-${i}`);
+    const rightEl = document.getElementById(`right-${i}`);
+    if (leftEl) leftEl.addEventListener('click', () => selectLeft(i, q));
+    if (rightEl) rightEl.addEventListener('click', () => selectRight(i, q));
+  });
+}
+
+function selectLeft(idx, q) {
+  if (matchState.matched.includes(idx)) return;
+  document.querySelectorAll('.match-item.left-item').forEach(el => el.classList.remove('selected'));
+  matchState.selectedLeft = idx;
+  document.getElementById(`left-${idx}`).classList.add('selected');
+  if (matchState.selectedRight !== null) tryMatch(q);
+}
+
+function selectRight(idx, q) {
+  if (matchState.matched.includes(idx)) return;
+  document.querySelectorAll('.match-item.right-item').forEach(el => el.classList.remove('selected'));
+  matchState.selectedRight = idx;
+  document.getElementById(`right-${idx}`).classList.add('selected');
+  if (matchState.selectedLeft !== null) tryMatch(q);
+}
+
+function tryMatch(q) {
+  const l = matchState.selectedLeft;
+  const r = matchState.selectedRight;
+  if (l === null || r === null) return;
+
+  if (l === r) {
+    document.getElementById(`left-${l}`).classList.remove('selected');
+    document.getElementById(`left-${l}`).classList.add('matched-ok');
+    document.getElementById(`right-${r}`).classList.remove('selected');
+    document.getElementById(`right-${r}`).classList.add('matched-ok');
+    matchState.matched.push(l);
+    matchState.selectedLeft = null;
+    matchState.selectedRight = null;
+
+    if (matchState.matched.length === q.pairs.length) {
+      answered = true;
+      stopTimer();
+      const pts = matchState.wrongCount === 0 ? 10 : (matchState.wrongCount <= 2 ? 6 : 3);
+      score += pts;
+      document.getElementById('score-display').textContent = score;
+      showFeedback(true, `${q.feedbackOk} (${matchState.wrongCount === 0 ? '+10 pts ¡Sin errores!' : `+${pts} pts`})`);
+      showNextBtn();
+    }
+  } else {
+    matchState.wrongCount++;
+    const leftEl = document.getElementById(`left-${l}`);
+    const rightEl = document.getElementById(`right-${r}`);
+    leftEl.classList.remove('selected');
+    leftEl.classList.add('matched-wrong');
+    rightEl.classList.remove('selected');
+    rightEl.classList.add('matched-wrong');
+    setTimeout(() => {
+      leftEl.classList.remove('matched-wrong');
+      rightEl.classList.remove('matched-wrong');
+    }, 500);
+    matchState.selectedLeft = null;
+    matchState.selectedRight = null;
+  }
+}
+
+// ===== TIMER =====
+function startTimer(seconds) {
+  timeLeft = seconds;
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerUI();
+    if (timeLeft <= 0) {
+      stopTimer();
+      if (!answered) {
+        answered = true;
+        const q = challenges[currentQ];
+        // Disable all buttons
+        document.querySelectorAll('.option-btn, .match-item').forEach(el => el.disabled = true);
+        // Mostrar la correcta si es opción múltiple
+        if (q.type === 'multiple' || q.type === 'scenario') {
+          const correctEl = document.getElementById(`opt-${shuffledCorrect}`);
+          if (correctEl) correctEl.classList.add('correct');
+        }
+        const inp = document.getElementById('blank-field');
+        if (inp) inp.disabled = true;
+        showFeedback(false, `⏱️ ¡Tiempo agotado! ${q.feedbackFail}`);
+        showNextBtn();
+      }
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+}
+
+function updateTimerUI() {
+  const q = challenges[currentQ];
+  const pct = (timeLeft / q.time) * 100;
+  const fill = document.getElementById('timer-fill');
+  const num = document.getElementById('timer-num');
+  if (!fill || !num) return;
+  fill.style.width = pct + '%';
+  if (timeLeft <= 5) {
+    fill.classList.add('warning');
+    num.style.color = 'var(--error)';
+  } else {
+    fill.classList.remove('warning');
+    num.style.color = 'var(--blue)';
+  }
+  num.textContent = timeLeft;
+}
+
+// ===== FEEDBACK =====
+function showFeedback(ok, msg) {
+  const fb = document.getElementById('feedback-box');
+  fb.innerHTML = msg;
+  fb.className = `feedback-box show ${ok ? 'correct-fb' : 'wrong-fb'}`;
+}
+
+function addScore() {
+  score += 10;
+  document.getElementById('score-display').textContent = score;
+}
+
+function showNextBtn() {
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= challenges.length) {
+    showFinalScreen();
+  } else {
+    loadChallenge();
+  }
+}
+
+// ===== PANTALLA FINAL =====
+function showFinalScreen() {
+  stopTimer();
+  showScreen('screen-final');
+  const maxScore = challenges.length * 10;
+  const pct = score / maxScore;
+
+  let medal, stars, titleMsg, bodyMsg, extraBox;
+
+  if (pct >= 0.9) {
+    medal = '🏆';
+    stars = '⭐⭐⭐⭐⭐';
+    titleMsg = `¡MAESTRO DEVOPS, ${playerName.toUpperCase()}!`;
+    bodyMsg = `Has destruido el muro de confusión y construido el puente de la agilidad. Tu dominio de DevOps es sobresaliente. ¡Estás listo para liderar transformaciones digitales!`;
+    extraBox = `<div class="success-box">
+      <h3>🎯 Logros desbloqueados</h3>
+      <ul style="list-style:none; padding:0;">
+        <li style="padding:5px 0; color:#005030;">🔗 Dominio de CI/CD</li>
+        <li style="padding:5px 0; color:#005030;">☁️ Infraestructura como Código</li>
+        <li style="padding:5px 0; color:#005030;">🛡️ DevSecOps Champion</li>
+        <li style="padding:5px 0; color:#005030;">📊 Métricas DORA Expert</li>
+      </ul>
+    </div>`;
+    setTimeout(launchConfetti, 300);
+  } else if (pct >= 0.7) {
+    medal = '🥈';
+    stars = '⭐⭐⭐⭐';
+    titleMsg = `¡MUY BIEN, ${playerName.toUpperCase()}!`;
+    bodyMsg = `Tu rendimiento es bueno y tienes una base sólida en DevOps. Con un poco más de práctica, alcanzarás la excelencia. ¡Sigue adelante!`;
+    extraBox = `<div class="improvement-box">
+      <h3>📚 Áreas para reforzar</h3>
+      <ul>
+        <li>Repasa las métricas DORA y su aplicación práctica</li>
+        <li>Profundiza en herramientas de orquestación (Kubernetes)</li>
+        <li>Practica la construcción de pipelines CI/CD completos</li>
+      </ul>
+    </div>`;
+  } else if (pct >= 0.5) {
+    medal = '🥉';
+    stars = '⭐⭐⭐';
+    titleMsg = `¡BUEN INTENTO, ${playerName.toUpperCase()}!`;
+    bodyMsg = `Estás en el camino correcto. Los fundamentos de DevOps requieren práctica constante. ¡Cada fallo es una oportunidad de aprendizaje!`;
+    extraBox = `<div class="improvement-box">
+      <h3>🎯 Plan de mejora recomendado</h3>
+      <ul>
+        <li>Revisa el ciclo de vida completo del software con DevOps</li>
+        <li>Estudia las diferencias entre CI (Integración) y CD (Entrega/Despliegue)</li>
+        <li>Explora herramientas como Docker, Jenkins y Git en la práctica</li>
+        <li>Lee sobre la cultura DevOps: colaboración, responsabilidad compartida y mejora continua</li>
+      </ul>
+    </div>`;
+  } else {
+    medal = '📚';
+    stars = '⭐⭐';
+    titleMsg = `¡CONTINÚA APRENDIENDO, ${playerName.toUpperCase()}!`;
+    bodyMsg = `Este es tu punto de partida, no tu límite. DevOps es un camino de aprendizaje continuo. ¡La perseverancia es tu superpoder! Cada experto fue alguna vez principiante.`;
+    extraBox = `<div class="improvement-box">
+      <h3>🚀 Tu plan de acción inmediato</h3>
+      <ul>
+        <li>Empieza por aprender GIT: es la base de todo en DevOps</li>
+        <li>Entiende qué es CI/CD y por qué automatizar el despliegue es clave</li>
+        <li>Conoce la diferencia entre Desarrollo y Operaciones, y cómo DevOps los une</li>
+        <li>Practica con herramientas gratuitas: GitHub Actions, Docker Desktop</li>
+        <li>Únete a comunidades DevOps online para aprender de expertos</li>
+        <li>¡Vuelve a intentar este juego! Cada repetición refuerza el aprendizaje</li>
+      </ul>
+    </div>`;
+  }
+
+  document.getElementById('final-content').innerHTML = `
+    <div class="medal">${medal}</div>
+    <div class="stars">${stars}</div>
+    <div class="final-name">${playerName.toUpperCase()}</div>
+    <div class="final-score-big">${score} / ${maxScore}</div>
+    <div style="text-align:center; margin-bottom:8px;">
+      <span style="font-family:'Orbitron',monospace; font-size:0.75rem; color:var(--blue); letter-spacing:2px; text-transform:uppercase;">PUNTUACIÓN FINAL</span>
+    </div>
+    <div class="final-msg">${titleMsg}<br><br>${bodyMsg}</div>
+    ${extraBox}
+    <div class="divider"></div>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="restartGame()">🔄 VOLVER A JUGAR</button>
+    </div>
+    <div style="text-align:center; margin-top:20px; font-size:0.78rem; color:#8aaccc; font-family:'Orbitron',monospace; letter-spacing:1px;">MISIÓN DEVOPS • APRENDIZAJE CONTINUO</div>
+  `;
+}
+
+function restartGame() {
+  score = 0;
+  currentQ = 0;
+  answered = false;
+  document.getElementById('player-name-input').value = playerName;
+  showScreen('screen-welcome');
+}
+
+// ===== CONFETTI =====
+function launchConfetti() {
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => createConfettiPiece(), i * 35);
+  }
+}
+function createConfettiPiece() {
+  const el = document.createElement('div');
+  el.className = 'confetti-piece';
+  el.style.left = Math.random() * 100 + 'vw';
+  el.style.top = '-20px';
+  el.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+  el.style.width = (8 + Math.random() * 8) + 'px';
+  el.style.height = (8 + Math.random() * 8) + 'px';
+  el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+  el.style.animationDuration = (2 + Math.random() * 2) + 's';
+  el.style.animationDelay = Math.random() * 0.5 + 's';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+</script>
+</body>
+</html>
